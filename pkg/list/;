@@ -1,0 +1,25 @@
+package list
+
+import (
+	"errors"
+	"os"
+	"path/filepath"
+)
+
+func ListFull() ([]string, error) {
+	// get LISTDIR from environment
+	listDir := os.Getenv("LISTDIR")
+	if listDir == "" {
+		return nil, errors.New("LISTDIR not set")
+	}
+
+	// get all .md files in LISTDIR
+	files, err := filepath.Glob(filepath.Join(listDir, "*.md"))
+	if err != nil {
+		return nil, err
+	}
+
+	return files, nil
+}
+
+
