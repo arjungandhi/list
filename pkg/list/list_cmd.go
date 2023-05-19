@@ -16,13 +16,13 @@ var Cmd = &Z.Cmd{
 		help.Cmd,
 	},
 	Call: func(_ *Z.Cmd, _ ...string) error {
-		files, err := ListNames()
+		files, err := List()
 		if err != nil {
 			return err
 		}
 
-		for _, file := range files {
-			fmt.Println(file)
+		for name, _ := range files {
+			fmt.Println(name)
 		}
 
 		return nil

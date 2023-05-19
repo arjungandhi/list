@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func List() ([]string, error) {
+func List() (map[string]string, error) {
 	// get LISTDIR from environment
 	listDir := os.Getenv("LISTDIR")
 	if listDir == "" {
@@ -20,20 +20,11 @@ func List() ([]string, error) {
 		return nil, err
 	}
 
-	return files, nil
-}
-
-func ListNames() ([]string, error) {
-	files, err := List()
-	if err != nil {
-		return nil, err
+	filesMap := make(map[string]string)
+	for _, file := range files {
+		fileName := strings.TrimSuffix(filepath.Base(file), filepath.Ext(file))
+		filesMap[fileName] = file
 	}
 
-	names := make([]string, len(files))
-	// return files without ext
-	for i, file := range files {
-		names[i] = strings.TrimSuffix(filepath.Base(file), filepath.Ext(file))
-	}
-
-	return names, nil
+	return filesMap, nil
 }

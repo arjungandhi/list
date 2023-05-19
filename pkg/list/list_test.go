@@ -1,12 +1,12 @@
 package list_test
 
 import (
+	"encoding/json"
 	"os"
 	"path/filepath"
 	"testing"
 
 	"github.com/arjungandhi/list/pkg/list"
-	"github.com/golang-collections/collections/set"
 )
 
 func TestList(t *testing.T) {
@@ -17,10 +17,11 @@ func TestList(t *testing.T) {
 	// first set LISTDIR
 	os.Setenv("LISTDIR", path)
 	// setup the test cases
-	answers := set.New()
-	answers.Insert("1.md")
-	answers.Insert("2.md")
-	answers.Insert("5.md")
+	answers := map[string]string{
+		"1": filepath.Join(path, "1.md"),
+		"2": filepath.Join(path, "2.md"),
+		"5": filepath.Join(path, "5.md"),
+	}
 
 	// then run test
 	files, err := list.List()
@@ -28,49 +29,18 @@ func TestList(t *testing.T) {
 		t.Errorf("list.List() returned an error: %v", err)
 	}
 
-	// convert files into a set
-	filesSet := set.New()
-	for _, file := range files {
-		filesSet.Insert(filepath.Base(file))
-	}
-
-	// compare the two sets
-	diff := answers.Difference(filesSet)
-	if diff.Len() != 0 {
-		t.Errorf("list.List() returned the wrong files: expected %v got %v", answers, filesSet)
-	}
-
-}
-
-func TestListNames(t *testing.T) {
-	path, err := filepath.Abs("./testdata")
+	// convert both maps to json and compare
+	filesJSON, err := json.Marshal(files)
 	if err != nil {
-		t.Errorf("filepath.Abs() returned an error: %v", err)
+		t.Errorf("json.Marshal(files) returned an error: %v", err)
 	}
-	// first set LISTDIR
-	os.Setenv("LISTDIR", path)
-	// setup the test cases
-	answers := set.New()
-	answers.Insert("1")
-	answers.Insert("2")
-	answers.Insert("5")
 
-	// then run test
-	files, err := list.ListNames()
+	answersJSON, err := json.Marshal(answers)
 	if err != nil {
-		t.Errorf("list.ListNames() returned an error: %v", err)
+		t.Errorf("json.Marshal(answers) returned an error: %v", err)
 	}
 
-	// convert files into a set
-	filesSet := set.New()
-	for _, file := range files {
-		filesSet.Insert(file)
+	if string(filesJSON) != string(answersJSON) {
+		t.Errorf("Expected %v, got %v", answers, files)
 	}
-
-	// compare the two sets
-	diff := answers.Difference(filesSet)
-	if diff.Len() != 0 {
-		t.Errorf("list.ListNames() returned the wrong files: expected %v got %v", answers, filesSet)
-	}
-
 }

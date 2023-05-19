@@ -2,6 +2,7 @@
 package list
 
 import (
+	"github.com/arjungandhi/list/pkg/edit"
 	l "github.com/arjungandhi/list/pkg/list"
 	Z "github.com/rwxrob/bonzai/z"
 	"github.com/rwxrob/help"
@@ -15,5 +16,6 @@ var Cmd = &Z.Cmd{
 	Commands: []*Z.Cmd{
 		help.Cmd,
 		l.Cmd,
+		edit.Cmd,
 	},
 }
