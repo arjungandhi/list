@@ -23,6 +23,7 @@ var Cmd = &Z.Cmd{
 	Usage:   "<list name>",
 	NumArgs: 1,
 	Call: func(_ *Z.Cmd, args ...string) error {
+
 		files, err := list.List()
 		if err != nil {
 			return err
